@@ -3,20 +3,30 @@ matplotlib.use('Agg')
 import pandas as pd
 import seaborn as sns
 import numpy as np
+import numpy.random as npr
 
 
-def boostrap(sample, sample_size, iterations):
-	# <---INSERT YOUR CODE HERE--->
+
+
+def boostrap(sample, sample_size, iteration, alpha):
+	new_samples = np.array([iteration, sample_size])
+	data_mean = np.mean(sample)
+	n = len(sample)
+	idx = npr.randint(0, n, (sample_size, n))
+	samples = sample[idx]
+	stat = np.sort(np.mean(samples, 1))
+	lower = stat[int((alpha/2.0)*sample_size)]
+	upper = stat[int((1-alpha/2.0)*sample_size)]
 	return data_mean, lower, upper
 
 
 if __name__ == "__main__":
-	df = pd.read_csv('./salaries.csv')
+	df = pd.read_csv("C:/Users/hecto/Documents/Lab_Data_Science/ce888labs/lab2/salaries.csv")
 
 	data = df.values.T[1]
 	boots = []
 	for i in range(100, 100000, 1000):
-		boot = boostrap(data, data.shape[0], i)
+		boot = boostrap(data, data.shape[0], i, 0.05)
 		boots.append([i, boot[0], "mean"])
 		boots.append([i, boot[1], "lower"])
 		boots.append([i, boot[2], "upper"])
@@ -33,7 +43,3 @@ if __name__ == "__main__":
 
 	#print ("Mean: %f")%(np.mean(data))
 	#print ("Var: %f")%(np.var(data))
-	
-
-
-	
